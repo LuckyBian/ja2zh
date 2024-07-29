@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video and Audio Synchronization</title>
+</head>
+<body>
+    <video id="myVideo" width="640" height="360" controls>
+        <source src="{{ url_for('video') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <p id="audioIndex">当前音频: 无</p>
+    <script>
+        const video = document.getElementById('myVideo');
+        const audioIndex = document.getElementById('audioIndex');
+        let currentAudio = new Audio();
+        let audioCounter = 1;
+        const totalAudioFiles = { total_audio_files };
+
+        video.addEventListener('play', function() {
+            playAudio(audioCounter);
+        });
+
+        video.addEventListener('ended', function() {
+            currentAudio.pause();
+            audioIndex.textContent = "当前音频: 无";
+        });
+
+        function playAudio(index) {
+            currentAudio.src = `/audio/${index}.wav`;
+            currentAudio.play();
+            audioIndex.textContent = `当前音频: ${index}`;
+            currentAudio.addEventListener('ended', function() {
+                audioCounter++;
+                if (audioCounter <= totalAudioFiles) {
+                    playAudio(audioCounter);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
